@@ -105,8 +105,6 @@ export default function AssignmentEditor() {
                     <input type="date" id="wd-available-from" value="2024-5-06"  className="form-control mb-2"/>
                     <label htmlFor="wd-available-until" className="col-sm-2 col-form-label">Until </label>
                     <input type="date" id="wd-available-until" value="2024-5-20" className="form-control mb-2" />                               
-          
-   
             
             <button className="btn btn-light w-40" type="button" id="wd-cancel">Cancel</button><button className="btn btn-danger w-40" type="button" id="wd-save">Save</button>
             </div>
