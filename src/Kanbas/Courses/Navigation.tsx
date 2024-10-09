@@ -1,7 +1,18 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import * as db from "../Database";
+import { Navigate, Route, Routes, useParams } from "react-router";
 
 
 export default function CoursesNavigation() {
+  const courses = db.courses;
+  const { pathname } = useLocation();
+  const { cid } = useParams();
+  const course = courses.find((course) => course._id === cid);
+  const links = [
+    {label:"Home", path:`/Kanbas/Courses/${course._id}/Home`},
+    {label:"Modules", path:`/Kanbas/Courses/${cid}/Modules`},
+    
+  "Piazza", "Zoom", "Assignments", "Quizzes", "Grades", "People"];
   return (
     <div id="wd-courses-navigation"  className="wd list-group fs-5 rounded-0">
       <Link to="/Kanbas/Courses/1234/Home"  id="wd-course-home-link"
