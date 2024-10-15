@@ -1,17 +1,37 @@
+import { Link} from "react-router-dom";
+import { useParams } from "react-router";
+import * as db from "../../Database";
 
 export default function AssignmentEditor() {
+  const assignments = db.assignments;
+  const courses = db.courses;
+  const { aid } = useParams();
+  const assignment = assignments.find((assignment) => assignment._id == aid);
+
     return (
       <div id="wd-assignments-editor">
    
         <label htmlFor="wd-name">Assignment Name</label>
-        <input id="wd-name" value="A1" className="form-control mb-2"/>
-        <p id="wd-description" className="form-control mb-2">
-        The asignment is available online Submit a link to the landing page of your Web application running on Netlify. 
-            The landing page should include the following: Your full name and section .Links to each of the lab assignments,
-            Links to the Kanbas application, Links to all relevant source code repositories. 
-            The Kanbas application should include a link to navigate back to the landing page.
-        </p>
-    
+        <input id="wd-name" value={aid} className="form-control mb-2"/>
+        <div className="mb-3">
+          <div className="border p-3">
+          <p id="wd-description" className="form-control mb-2">
+              The assignment is <span className="text-danger">available online </span>
+              <br/>
+              <span>Submit a link to the landing page of your Web application running on Netlify. </span>
+              <br/>
+              The landing page should include the following: 
+              <ul>
+                <br/>
+                <li>Your full name and section.</li>
+                <li>Links to each of the lab assignments</li>
+                <li>Links to the Kanbas application</li>
+                <li>Links to all relevant source code repositories</li> 
+              </ul>
+              The Kanbas application should include a link to navigate back to the landing page.
+          </p>
+        </div>
+    </div>
 
       
         <form>
@@ -91,22 +111,36 @@ export default function AssignmentEditor() {
         <div className="row mb-3">
           <label htmlFor="wd-submission-type" className="col-sm-2 col-form-label">Assign</label>
           <div className="col-sm-10">
+            <div className="border p-3">
                 <label htmlFor="wd-assign-to" className="col-sm-2 col-form-label">Assign to </label>
                 <input id="wd-assign-to" className="form-control mb-2" value="Everyone" />
    
-
+      
                     {/* Due Date */}
                     <label htmlFor="wd-due-date" className="col-sm-2 col-form-label">Due </label>
-                    <input type="date" id="wd-due-date" value="2024-5-13" className="col-sm-2 col-form-label"/><br/>
+                    <div className="input-group mb-3">
+                    <input type="date" id="wd-due-date" value="May 13, 2024, 11:59 PM" className="form-control"/><br/>
+                    </div>
 
                     {/* Available From Until */}
-                    
-                    <label htmlFor="wd-available-from" className="col-sm-2 col-form-label" >Available from </label>
-                    <input type="date" id="wd-available-from" value="2024-5-06"  className="form-control mb-2"/>
-                    <label htmlFor="wd-available-until" className="col-sm-2 col-form-label">Until </label>
-                    <input type="date" id="wd-available-until" value="2024-5-20" className="form-control mb-2" />                               
-            
+                    <div className="row">
+                      <div className="col-md-6">
+                        <label htmlFor="wd-available-from" className="col-sm-3 col-form-label">Available from </label>
+                        <div className="input-group mb-3">
+                        <input type="date" id="wd-available-from" value="2024-5-06"  className="form-control mb-2"/>
+                        </div>
+                        </div>
+                        <div className="col-md-6">
+                        <label htmlFor="wd-available-until" className="col-sm-3 col-form-label">Until </label>
+                        <div className="input-group mb-3">
+                        <input type="date" id="wd-available-until" value="2024-5-20" className="form-control mb-2" /> 
+                        </div>
+                      </div>      
+                      </div>                        
+            <div className="d-flex justify-content-end mt-3">
             <button className="btn btn-light w-40" type="button" id="wd-cancel">Cancel</button><button className="btn btn-danger w-40" type="button" id="wd-save">Save</button>
+            </div>
+            </div>
             </div>
         </div>
   </form>
