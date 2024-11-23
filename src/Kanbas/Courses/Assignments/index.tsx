@@ -7,31 +7,36 @@ import { LuFileEdit } from "react-icons/lu";
 import { FaTrash } from "react-icons/fa";
 import { Link, useNavigate} from "react-router-dom";
 import { useParams } from "react-router";
-import * as db from "../../Database";
-import { setAssignment, deleteAssignment } from "./reducer";
+import * as assignmentsClient from "./client";
+import { selectAssignment, deleteAssignment, setAssignments } from "./reducer";
 import { useSelector, useDispatch } from "react-redux";
-import FacultyProtectedRoute from "../../Account/FacultyProtectedRoute";
+import { useState, useEffect } from "react";
 
 export default function Assignments() {
-  const courses = db.courses;
   const { cid } = useParams();
+  useEffect(()=>{
+    assignmentsClient.findAssignmentsForCourse(cid).then((assignments) => {
+      dispatch(setAssignments(assignments));
+    });
+  } , [cid])
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { assignments } = useSelector((state: any) => state.assignmentsReducer);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const isStudent = currentUser.role === "STUDENT";
   const isFaculty = currentUser.role === "FACULTY";
 
-  const intialAssignment = {
-    title: "New Assignment Title",
-    course: "Assignment's Course",
-    description: "New Description",
-    points: "100",
-    dueDate: "2024-11-13",
-    availableFrom: "2024-11-01",
-    availableUntil: "2024-11-07",
+  const newAssignment = ({
+		title: "New Assignment",
+		description: "New Assignment Description",
+		points: 100,
+		dueDate: "2023-12-12",
+		availableFromDate: "",
+		availableUntilDate: "",
+		_id: "",
+	});
 
-  }
+
+
     return (
         
       <div id="wd-assignments">
@@ -42,7 +47,7 @@ export default function Assignments() {
           
         <Link to={`/Kanbas/Courses/${cid}/Assignments/new`}>
         <button type="submit" className="btn btn-md btn-danger float-end me-1 wd-kanbas-save-profile btn-danger"
-          onClick={() => dispatch(setAssignment(intialAssignment))}>
+          onClick={() => dispatch(setAssignments({ ...newAssignment}))}>
         <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
           Assignment
         </button>
@@ -108,7 +113,7 @@ export default function Assignments() {
             {isFaculty && (
             <Link to={`/Kanbas/Courses/${cid}/Assignments/${assignment._id}`} 
               className="wd-assignment-link text-decoration-none text-dark"
-              onClick={() => dispatch(setAssignment(assignment))}>
+              onClick={() => dispatch(setAssignments(assignment))}>
               {assignment.title}
             </Link>
             )}

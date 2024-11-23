@@ -1,9 +1,11 @@
 import { Link, useNavigate} from "react-router-dom";
 import { useParams } from "react-router";
 import * as db from "../../Database";
-import React, { useState } from "react";
-import { addAssignment, updateAssignment, setAssignment} from "./reducer";
+import React, { useState, useEffect } from "react";
+import { addAssignment, updateAssignment, selectAssignment} from "./reducer";
 import { useSelector, useDispatch } from "react-redux";
+import * as assignmentsClient from "./client";
+
 
 
 export default function Editor() {
@@ -15,9 +17,11 @@ export default function Editor() {
   const { assignment } = useSelector((state: any) => state.assignmentsReducer);
 
 
-    const saveAssignment = () => {
+    const saveAssignment = async () => {
       if(aid === "new") {
-        dispatch(addAssignment({ ...assignment, course: cid, _id: new Date().getTime().toString()}));
+        assignmentsClient.createAssignment(cid, assignment).then((assignment) => {
+          dispatch(addAssignment({ ...assignment, course: cid, _id: new Date().getTime().toString()}));
+        })
       } else {
         dispatch(updateAssignment({ ...assignment, course:cid}));
       }
@@ -31,26 +35,26 @@ export default function Editor() {
     <form>
         <label htmlFor="wd-title">Assignment Name</label>
         <input defaultValue={assignment.title} id="wd-title" className="form-control mb-2"
-                 onChange={(e) => dispatch(setAssignment({ ...assignment, title:  e.target.value }))}/>
+                 onChange={(e) => dispatch(selectAssignment({ ...assignment, title:  e.target.value }))}/>
         
         <div className="mb-3">
           <div className="border p-3">
           <textarea defaultValue={assignment.description} className="form-control mb-2" id="wd-description"
-             onChange={(e) => dispatch(setAssignment({ ...assignment, description: e.target.value }))} />
+             onChange={(e) => dispatch(selectAssignment({ ...assignment, description: e.target.value }))} />
 
             <div className="row mb-3">
               <label htmlFor="wd-points" className="col-sm-2 col-form-label">
               Points</label>
               <div className="col-sm-10">
                 <input defaultValue={assignment.points} id="wd-points" className="form-control mb-2"
-                  onChange={ (e) => dispatch(setAssignment({ ...assignment, points: e.target.value }))}/>
+                  onChange={ (e) => dispatch(selectAssignment({ ...assignment, points: e.target.value }))}/>
               </div>
             </div>
 
           <div className="row mb-3">
             <label htmlFor="wd-group" className="col-sm-2 col-form-label">Assignment Group</label>
             <div className="col-sm-10">
-              <select onChange = {(e) => dispatch(setAssignment({ ...assignment, group: e.target.value}))}
+              <select onChange = {(e) => dispatch(selectAssignment({ ...assignment, group: e.target.value}))}
                 className="form-select" id="wd-group" name="role">
                 <option selected>ASSIGNMENTS</option>
                 <option value="1">One</option>
@@ -63,7 +67,7 @@ export default function Editor() {
         <div className="row mb-3">
           <label htmlFor="wd-display-grade-as" className="col-sm-2 col-form-label">Display Grade as</label>
           <div className="col-sm-10">
-            <select onChange = {(e) => dispatch(setAssignment({ ...assignment, gradeAs: e.target.value}))} 
+            <select onChange = {(e) => dispatch(selectAssignment({ ...assignment, gradeAs: e.target.value}))} 
             className="form-select" id="wd-display-grade-as" name="role">
               <option value="Percentage">Percentage</option>
             </select>
@@ -73,7 +77,7 @@ export default function Editor() {
         <div className="row mb-3">
           <label htmlFor="wd-submission-type" className="col-sm-2 col-form-label">Submission Type</label>
           <div className="col-sm-10">
-            <select onChange = {(e) => dispatch(setAssignment({ ...assignment, submissionType: e.target.value}))} 
+            <select onChange = {(e) => dispatch(selectAssignment({ ...assignment, submissionType: e.target.value}))} 
               className="form-select" id="wd-submission-type" name="role">
               <option value="Online">Online</option>
             </select>
@@ -112,13 +116,13 @@ export default function Editor() {
           <div className="col-sm-10">
             <div className="border p-3">
                 <label htmlFor="wd-assign-to" className="col-sm-2 col-form-label">Assign to </label>
-                <input onChange = {(e) => dispatch(setAssignment({ ...assignment, assignTo: e.target.value}))} 
+                <input onChange = {(e) => dispatch(selectAssignment({ ...assignment, assignTo: e.target.value}))} 
                   id="wd-assign-to" className="form-control mb-2" value="Everyone" />
 
                    
                     <label htmlFor="wd-due-date" className="col-sm-2 col-form-label">Due </label>
                     <div className="input-group mb-3">
-                    <input onChange = {(e) => dispatch(setAssignment({ ...assignment, dueDate: e.target.value}))} 
+                    <input onChange = {(e) => dispatch(selectAssignment({ ...assignment, dueDate: e.target.value}))} 
                     type="date" id="wd-due-date" value="May 13, 2024, 11:59 PM" className="form-control"/><br/>
                     </div>
 
@@ -127,14 +131,14 @@ export default function Editor() {
                       <div className="col-md-6">
                         <label htmlFor="wd-available-from" className="col-sm-3 col-form-label">Available from </label>
                         <div className="input-group mb-3">
-                        <input onChange = {(e) => dispatch(setAssignment({ ...assignment, availableFrom: e.target.value}))}
+                        <input onChange = {(e) => dispatch(selectAssignment({ ...assignment, availableFrom: e.target.value}))}
                           type="date" id="wd-available-from" value="2024-5-06"  className="form-control mb-2"/>
                         </div>
                         </div>
                         <div className="col-md-6">
                         <label htmlFor="wd-available-until" className="col-sm-3 col-form-label">Until </label>
                         <div className="input-group mb-3">
-                        <input onChange = {(e) => dispatch(setAssignment({ ...assignment, availableUntil: e.target.value}))} 
+                        <input onChange = {(e) => dispatch(selectAssignment({ ...assignment, availableUntil: e.target.value}))} 
                           type="date" id="wd-available-until" value={assignment.availableUntil} className="form-control mb-2" /> 
                         </div>
                       </div>      
