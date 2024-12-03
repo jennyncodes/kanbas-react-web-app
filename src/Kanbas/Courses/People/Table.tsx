@@ -1,12 +1,12 @@
+import React, { useState, useEffect } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { useParams } from "react-router-dom";
-import * as db from "../../Database";
+// import * as db from "../../Database";
 
-export default function PeopleTable() {
-  const { cid } = useParams();
-  const { users, enrollments } = db;
-  console.log(users);
-  console.log(enrollments);
+export default function PeopleTable({ users = [] }: { users?: any[] }) {
+  // const { cid } = useParams();
+  // const { users, enrollments } = db;
+
   return (
     <div id="wd-people-table">
       <table className="table table-striped">
@@ -15,9 +15,9 @@ export default function PeopleTable() {
         </thead>
         <tbody>
               {users
-          .filter((user) =>
-            enrollments.some((enrollment) => enrollment.user === user._id && enrollment.course === cid)
-          )
+          // .filter((user) =>
+          //   enrollments.some((enrollment) => enrollment.user === user._id && enrollment.course === cid)
+          // )
           .map((user: any) => (
             <tr key={user._id}>
               <td className="wd-full-name text-nowrap">
