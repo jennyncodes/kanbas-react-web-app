@@ -14,6 +14,8 @@ export default function Dashboard({
   addNewCourse,
   deleteCourse,
   updateCourse,
+  enrolling,
+  setEnrolling,
 }: {
   courses: any[];
   course: any;
@@ -21,6 +23,8 @@ export default function Dashboard({
   addNewCourse: () => void;
   deleteCourse: (course: any) => void;
   updateCourse: () => void;
+  enrolling: boolean; 
+  setEnrolling: (enrolling: boolean) => void;
 }) {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const { enrollments } = useSelector((state: any) => state.enrollmentsReducer);
@@ -34,7 +38,11 @@ export default function Dashboard({
 
   return (
     <div id="wd-dashboard">
-      <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
+      <h1 id="wd-dashboard-title">Dashboard
+      <button onClick={() => setEnrolling(!enrolling)} className="float-end btn btn-primary" >
+          {enrolling ? "My Courses" : "All Courses"}
+        </button>
+      </h1> <hr />
       {isStudent && (
         <button
           className={`btn float-end ${
@@ -89,11 +97,7 @@ export default function Dashboard({
       <div id="wd-dashboard-courses" className="row">
         <div className="row row-cols-1 row-cols-md-5 g-4">
 
-          {courses.filter(
-            (course:any) =>
-              showAllCourses ||
-            userEnrollments.some((e:any) => e.course === course._id)
-          )
+          {courses
             .map((course) => {
               if (
                 enrollments.some(
@@ -110,12 +114,16 @@ export default function Dashboard({
             .map((course) => (
               <div
                 className="wd-dashboard-course col"
-                style={{ width: "300px" }}
-              >
+                style={{ width: "300px" }}>
                 <div className="card rounded-3 overflow-hidden">
                   <img src="/images/reactjs.jpg" width="100%" height={160} />
                   <div className="card-body">
                     <h5 className="wd-dashboard-course-title card-title">
+                    {enrolling && (
+              <button className={`btn ${ course.enrolled ? "btn-danger" : "btn-success" } float-end`} >
+                {course.enrolled ? "Unenroll" : "Enroll"}
+              </button>
+            )}
                       {course.name}
                     </h5>
                     <p

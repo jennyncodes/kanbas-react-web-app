@@ -25,7 +25,7 @@ export default function Kanbas() {
   });
 
   const addNewCourse = async () => {
-    const newCourse = await userClient.createCourse(course);
+    const newCourse = await courseClient.createCourse(course);
     setCourses([...courses, newCourse ]);
   };
 
@@ -33,7 +33,7 @@ export default function Kanbas() {
     const status = await courseClient.deleteCourse(courseId);
     setCourses(courses.filter((course) => course._id !== courseId));
   };
-
+ 
   const updateCourse = async () => {
     await courseClient.updateCourse(course);
     setCourses(courses.map((c) => {
@@ -43,20 +43,42 @@ export default function Kanbas() {
 
   );};
 
-
-  const fetchCourses = async () => {
+  const [enrolling, setEnrolling] = useState<boolean>(false);
+  const findCoursesForUser = async () => {
     try {
-      const courses = await userClient.findMyCourses();
+      const courses = await userClient.findCoursesForUser(currentUser._id);
       setCourses(courses);
     } catch (error) {
       console.error(error);
     }
   };
+  const fetchCourses = async () => {
+    try {
+      const allCourses = await courseClient.fetchAllCourses();
+      const enrolledCourses = await userClient.findCoursesForUser(
+        currentUser._id
+      );
+      const courses = allCourses.map((course: any) => {
+        if (enrolledCourses.find((c: any) => c._id === course._id)) {
+          return { ...course, enrolled: true };
+        } else {
+          return course;
+        }
+      });
+      setCourses(courses);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+ 
   useEffect(() => {
-    fetchCourses();
-  }, [currentUser]);
-
-
+    if (enrolling) {
+      fetchCourses();
+    } else {
+      findCoursesForUser();
+    }
+  }, [currentUser, enrolling]);
+ 
   return (
     
     <Provider store={store}>
@@ -76,7 +98,9 @@ export default function Kanbas() {
                         setCourse={setCourse}
                         addNewCourse={addNewCourse}
                         deleteCourse={deleteCourse}
-                        updateCourse={updateCourse}/></ProtectedRoute>
+                        updateCourse={updateCourse}
+                        enrolling={enrolling} 
+                        setEnrolling={setEnrolling}/></ProtectedRoute>
                     }/>
 
                     <Route path="/Courses/:cid/*" element={<ProtectedRoute><Courses courses={courses} /></ProtectedRoute>} />
