@@ -8,17 +8,13 @@ import { FaTrash } from "react-icons/fa";
 import { Link, useNavigate} from "react-router-dom";
 import { useParams } from "react-router";
 import * as assignmentsClient from "./client";
+import * as coursesClient from "../client";
 import { selectAssignment, deleteAssignment, setAssignments } from "./reducer";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 
 export default function Assignments() {
   const { cid } = useParams();
-  useEffect(()=>{
-    assignmentsClient.findAssignmentsForCourse(cid).then((assignments) => {
-      dispatch(setAssignments(assignments));
-    });
-  } , [cid])
   const dispatch = useDispatch();
   const { assignments } = useSelector((state: any) => state.assignmentsReducer);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
@@ -35,7 +31,15 @@ export default function Assignments() {
 		_id: "",
 	});
 
-
+  const fetchAssignments = async () => {
+    const assignments = await coursesClient.findAssignmentsForCourse(
+      cid as string
+    );
+    dispatch(setAssignments(assignments));
+  };
+  useEffect(() => {
+    fetchAssignments();
+  }, []);
 
     return (
         
@@ -85,9 +89,7 @@ export default function Assignments() {
             
         
           <ul id="wd-assignment-list" className="list-group rounded-0">
-          {assignments
-            .filter((assignment: any) => assignment.course === cid)
-            .map((assignment: any) => (
+          {assignments.map((assignment: any) => (
           <li className="wd-assignment-list-item list-group-item p-3 ps-2 ">
           <BsGripVertical className="me-2 fs-3" />
           

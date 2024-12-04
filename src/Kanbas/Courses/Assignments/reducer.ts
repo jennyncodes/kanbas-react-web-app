@@ -23,26 +23,27 @@ const assignmentsSlice = createSlice({
     setAssignments: (state, action) => {
 			state.assignments = action.payload;
 		},
-    addAssignment: (state, action) => {
-			state.assignments = [{...action.payload, _id: new Date().getTime().toString()}, ...state.assignments];
+    addAssignment: (state, {payload: assignment}) => {
+      const newAssignment: any = {
+        _id: new Date().getTime().toString(),
+        ...assignment,
+      };
+      state.assignments = [...state.assignments, newAssignment] as any;
 		},
-    deleteAssignment: (state, action) => {
+    deleteAssignment: (state, {payload: assignmentId}) => {
       state.assignments = state.assignments.filter(
-        (assignment: any) => assignment._id !== action.payload
+        (assignment: any) => assignment._id !== assignmentId
       );
     },
-    updateAssignment: (state, action) => {
-      state.assignments = state.assignments.map((assignment:any) => {
-        if (assignment._id === action.payload._id) {
-          return action.payload;
-        } else {
-          return assignment;
-        }
-      }
-      );
+    updateAssignment: (state, {payload: assignment}) => {
+      state.assignments = state.assignments.map((assignment:any) => 
+        assignment._id === assignment._id ? assignment : assignment
+      ) as any;
   },
-    selectAssignment: (state, action) => {
-      state.assignment = action.payload;
+    selectAssignment: (state, { payload: assignmentId}) => {
+      state.assignments = state.assignments.map((a: any) =>
+        a._id === assignmentId ? { ...a, editing: true } : a
+      ) as any;
   },
     
   },

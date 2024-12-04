@@ -5,25 +5,26 @@ import React, { useState, useEffect } from "react";
 import { addAssignment, updateAssignment, selectAssignment} from "./reducer";
 import { useSelector, useDispatch } from "react-redux";
 import * as assignmentsClient from "./client";
-
+import * as coursesClient from "../client";
 
 
 export default function Editor() {
-  // const assignments = db.assignments;
   const courses = db.courses;
   const { cid, aid } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { assignment } = useSelector((state: any) => state.assignmentsReducer);
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
 
 
     const saveAssignment = async () => {
+      if (!cid) return;
       if(aid === "new") {
-        assignmentsClient.createAssignment(cid, assignment).then((assignment) => {
-          dispatch(addAssignment({ ...assignment, course: cid, _id: new Date().getTime().toString()}));
+        const newAssignment = await coursesClient.createAssignmentForCourse(cid, assignment).then((assignment) => {
+          dispatch(addAssignment(newAssignment));
         })
       } else {
-        dispatch(updateAssignment({ ...assignment, course:cid}));
+        dispatch(updateAssignment(assignment));
       }
       navigate(`/Kanbas/Courses/${cid}/Assignments`);
     };

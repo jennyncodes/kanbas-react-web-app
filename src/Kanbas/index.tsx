@@ -5,7 +5,6 @@ import Dashboard from "./Dashboard";
 import Courses from "./Courses";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./styles.css";
-// import * as db from "./Database";
 import { useEffect, useState } from "react";
 import store from "./store";
 import { Provider } from "react-redux";
@@ -37,7 +36,9 @@ export default function Kanbas() {
   const updateCourse = async () => {
     await courseClient.updateCourse(course);
     setCourses(courses.map((c) => {
-      if (c._id === course._id) { return course; }
+      if (c._id === course._id) { 
+        return course; 
+      }
       else { return c; }
     })
 
@@ -52,6 +53,24 @@ export default function Kanbas() {
       console.error(error);
     }
   };
+
+  const updateEnrollment = async (courseId: string, enrolled: boolean) => {
+    if (enrolled) {
+      await userClient.enrollIntoCourse(currentUser._id, courseId);
+    } else {
+      await userClient.unenrollFromCourse(currentUser._id, courseId);
+    }
+    setCourses(
+      courses.map((course) => {
+        if (course._id === courseId) {
+          return { ...course, enrolled: enrolled };
+        } else {
+          return course;
+        }
+      })
+    );
+  };
+ 
   const fetchCourses = async () => {
     try {
       const allCourses = await courseClient.fetchAllCourses();
@@ -72,10 +91,12 @@ export default function Kanbas() {
   };
  
   useEffect(() => {
-    if (enrolling) {
-      fetchCourses();
-    } else {
-      findCoursesForUser();
+    if (currentUser && currentUser._id) {
+      if (enrolling) {
+        fetchCourses();
+      } else {
+        findCoursesForUser();
+      }
     }
   }, [currentUser, enrolling]);
  
@@ -100,7 +121,8 @@ export default function Kanbas() {
                         deleteCourse={deleteCourse}
                         updateCourse={updateCourse}
                         enrolling={enrolling} 
-                        setEnrolling={setEnrolling}/></ProtectedRoute>
+                        setEnrolling={setEnrolling}
+                        updateEnrollment={updateEnrollment}/></ProtectedRoute>
                     }/>
 
                     <Route path="/Courses/:cid/*" element={<ProtectedRoute><Courses courses={courses} /></ProtectedRoute>} />
