@@ -1,9 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {assignments}  from "../../Database";
-
 
 const initialState = {
-    assignments,
+    assignments:<any>[],
     assignment: {
       _id: "1",
       title: "New Assignment", 
