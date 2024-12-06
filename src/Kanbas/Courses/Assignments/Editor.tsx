@@ -1,6 +1,5 @@
 import { Link, useNavigate} from "react-router-dom";
 import { useParams } from "react-router";
-import * as db from "../../Database";
 import React, { useState, useEffect } from "react";
 import { addAssignment, updateAssignment, selectAssignment} from "./reducer";
 import { useSelector, useDispatch } from "react-redux";
@@ -9,7 +8,6 @@ import * as coursesClient from "../client";
 
 
 export default function Editor() {
-  const courses = db.courses;
   const { cid, aid } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
