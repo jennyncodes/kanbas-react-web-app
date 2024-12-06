@@ -51,7 +51,7 @@ export default function Assignments() {
           
         <Link to={`/Kanbas/Courses/${cid}/Assignments/new`}>
         <button type="submit" className="btn btn-md btn-danger float-end me-1 wd-kanbas-save-profile btn-danger"
-          onClick={() => dispatch(setAssignments({ ...newAssignment}))}>
+          >
         <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
           Assignment
         </button>
@@ -115,7 +115,7 @@ export default function Assignments() {
             {isFaculty && (
             <Link to={`/Kanbas/Courses/${cid}/Assignments/${assignment._id}`} 
               className="wd-assignment-link text-decoration-none text-dark"
-              onClick={() => dispatch(setAssignments(assignment))}>
+             >
               {assignment.title}
             </Link>
             )}
