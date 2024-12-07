@@ -4,11 +4,27 @@ import { useParams } from "react-router-dom";
 import PeopleDetails from "./Details";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-// import * as db from "../../Database";
-// import * as client from "./client";
+import * as coursesClient from "../client";
 
 export default function PeopleTable({ users = [] }: { users?: any[] }) {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const { cid } = useParams<{ cid: string }>();  // Get course ID from URL
+  const [courseUsers, setCourseUsers] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchUsersForCourse = async () => {
+      try {
+        const usersForCourse = await coursesClient.findUsersForCourse(cid as string);
+        setCourseUsers(usersForCourse);  
+      } catch (error) {
+        console.error("Error fetching users for course:", error);
+      }
+    };
+
+    if (cid) {
+      fetchUsersForCourse();
+    }
+  }, [cid]);
 
   return (
     <div id="wd-people-table">
@@ -18,7 +34,7 @@ export default function PeopleTable({ users = [] }: { users?: any[] }) {
           <tr><th>Name</th><th>Login ID</th><th>Section</th><th>Role</th><th>Last Activity</th><th>Total Activity</th></tr>
         </thead>
         <tbody>
-              {users.map((user: any) => (
+              {courseUsers.map((user: any) => (
             <tr key={user._id}>
               <td className="wd-full-name text-nowrap">
               <Link to={`/Kanbas/Account/Users/${user._id}`} className="text-decoration-none">
