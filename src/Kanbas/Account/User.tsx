@@ -58,13 +58,14 @@ const createUser = async () => {
      <h3>Users</h3>
      <input onChange={(e) => filterUsersByName(e.target.value)} placeholder="Search people"
              className="form-control float-start w-25 me-2 wd-filter-by-name" />
-
+    
      <select value={role} onChange={(e) =>filterUsersByRole(e.target.value)}
               className="form-select float-start w-25 wd-select-role" >
         <option value="">All Roles</option>    <option value="STUDENT">Students</option>
         <option value="TA">Assistants</option> <option value="FACULTY">Faculty</option>
         <option value="ADMIN">Administrators</option>
         </select>
+        
      <PeopleTable users={users} />
    </div>
 );}
